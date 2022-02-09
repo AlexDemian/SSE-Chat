@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Lobby{% endblock %}
+
+{% block content %}
+
+<form action="{% url 'join-room' %}" method="post">
+    <div>
+        <label for="id-username">
+            Enter desired username:
+        </label>
+        <input name="username" id="id-username" required/>
+    </div>
+    <button type="submit">Enter chat</button>
+</form>
+
+{% endblock %}

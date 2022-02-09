@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Chat{% endblock %}
+
+
+{% block content %}
+
+
+<div>
+    Chat:
+</div>
+
+<div disabled id="id-chat"></div>
+
+<div>
+    Enter message:
+</div>
+
+<textarea id="id-message" rows="5" cols="45" required></textarea>
+
+<div>
+    <button type="button" onclick="postMessage()">Enter message</button>
+</div>
+
+
+
+<script>
+    const postUrl = "{% url 'post-message' %}"
+    const getUrl = "{% url 'get-messages' %}"
+    const messageEl = document.getElementById("id-message");
+    const chatEl = document.getElementById("id-chat")
+
+    function postMessage(message) {
+
+        let formData = new FormData();
+        formData.append("message", messageEl.value);
+
+        fetch(postUrl, {
+            method: "POST",
+            body: formData
+        }).then(() => messageEl.value = '')
+    }
+
+    window.onload = function() {
+        var evtSource = new EventSource(getUrl);
+
+        evtSource.onmessage = function(e) {
+            let messages = JSON.parse(e.data);
+            chatEl.innerHTML = ""
+            messages.forEach(message =>
+                chatEl.innerHTML += `<div>${message.username}: ${message.message}</div>`
+            );
+        };
+
+        chatEl.scrollTop(chatEl.scrollHeight);
+    }
+
+</script>
+
+
+
+{% endblock %}
